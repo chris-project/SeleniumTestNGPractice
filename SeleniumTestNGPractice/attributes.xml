@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+  <test thread-count="5" name="Test">
+    <classes>
+      <class name="com.testng.attributes.IgnoreClassLevel"/>
+      <class name="com.testng.attributes.AlwaysRun"/>
+      <class name="com.testng.attributes.DependsOnMethods"/>
+      <class name="com.testng.attributes.InvocationCount"/>
+      <class name="com.testng.attributes.IgnoreTestLevel"/>
+      <class name="com.testng.attributes.PriorityDescription"/>
+      <class name="com.testng.attributes.Enabled"/>
+      <class name="com.testng.attributes.TimeOut"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->

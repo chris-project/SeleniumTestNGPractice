@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="16" total="17" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-09-28T09:58:37 IST" name="Default suite" finished-at="2026-09-28T09:58:42 IST" duration-ms="4307">
+    <groups>
+    </groups>
+    <test started-at="2026-09-28T09:58:37 IST" name="Default test" finished-at="2026-09-28T09:58:42 IST" duration-ms="4307">
+      <class name="com.tests.SeleniumCommand">
+        <test-method is-config="true" signature="beforeMethod()[pri:0, instance:com.tests.SeleniumCommand@20ce78ec]" started-at="2026-09-28T09:58:37 IST" name="beforeMethod" finished-at="2026-09-28T09:58:39 IST" duration-ms="1142" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- beforeMethod -->
+        <test-method signature="f17()[pri:0, instance:com.tests.SeleniumCommand@20ce78ec]" started-at="2026-09-28T09:58:39 IST" name="f17" finished-at="2026-09-28T09:58:42 IST" duration-ms="3005" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- f17 -->
+        <test-method is-config="true" signature="afterMethod()[pri:0, instance:com.tests.SeleniumCommand@20ce78ec]" started-at="2026-09-28T09:58:42 IST" name="afterMethod" finished-at="2026-09-28T09:58:42 IST" duration-ms="132" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- afterMethod -->
+      </class> <!-- com.tests.SeleniumCommand -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>

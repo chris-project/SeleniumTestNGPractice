@@ -1,0 +1,2002 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Automation Testing Playground</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
+        color: #333;
+        line-height: 1.5;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #1a73e8;
+      }
+      h2 {
+        background: #1a73e8;
+        color: white;
+        padding: 10px 15px;
+        margin: 30px 0 15px;
+        border-radius: 6px;
+        font-size: 1.1rem;
+      }
+      .section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #444;
+      }
+      input[type="text"],
+      input[type="password"],
+      input[type="date"],
+      input[type="time"],
+      input[type="file"],
+      input[type="number"],
+      textarea,
+      select {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+      .checkbox-group,
+      .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .checkbox-group label,
+      .radio-group label {
+        font-weight: normal;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      button,
+      .btn {
+        background: #1a73e8;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 4px 6px 4px 0;
+        transition: background 0.2s;
+      }
+      button:hover,
+      .btn:hover {
+        background: #1557b0;
+      }
+      button:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+      }
+
+      /* Action buttons in table */
+      .btn-edit {
+        background: #0d904f;
+        padding: 5px 10px;
+        font-size: 12px;
+        margin: 0 3px 0 0;
+      }
+      .btn-edit:hover {
+        background: #0a7a42;
+      }
+      .btn-delete {
+        background: #d93025;
+        padding: 5px 10px;
+        font-size: 12px;
+        margin: 0;
+      }
+      .btn-delete:hover {
+        background: #b3261e;
+      }
+
+      /* ===== Table Styles ===== */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px 12px;
+        text-align: left;
+      }
+      th {
+        background: #e8f0fe;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        white-space: nowrap;
+      }
+      th:hover {
+        background: #d2e3fc;
+      }
+      th .sort-icon {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 14px;
+        color: #5f6368;
+        vertical-align: middle;
+        min-width: 16px;
+        text-align: center;
+      }
+      th.sorted .sort-icon {
+        color: #1a73e8;
+        font-weight: bold;
+      }
+      tr.selected-row {
+        background: #e3f2fd;
+      }
+      .table-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .selection-info {
+        font-weight: 600;
+        color: #1a73e8;
+      }
+      .pagination {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      .page-btn {
+        min-width: 36px;
+        padding: 6px 10px;
+        background: #e8f0fe;
+        color: #1a73e8;
+        border: 1px solid #bbdefb;
+      }
+      .page-btn.active {
+        background: #1a73e8;
+        color: white;
+        border-color: #1a73e8;
+      }
+      .page-btn:disabled {
+        background: #eee;
+        color: #999;
+        border-color: #ddd;
+      }
+      .loader {
+        display: none;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #e0e0e0;
+        border-top: 3px solid #1a73e8;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-left: 8px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #table-status {
+        margin-top: 8px;
+        color: #555;
+        font-size: 14px;
+      }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 0;
+      }
+      .tab-btn {
+        background: #e0e0e0;
+        color: #333;
+        border-radius: 6px 6px 0 0;
+        margin: 0;
+      }
+      .tab-btn.active {
+        background: #1a73e8;
+        color: white;
+      }
+      .tab-content {
+        display: none;
+        border: 1px solid #ddd;
+        border-top: none;
+        padding: 20px;
+        min-height: 120px;
+        background: #fafafa;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      .tab-loader {
+        display: none;
+        text-align: center;
+        padding: 30px;
+        color: #666;
+      }
+
+      /* Drag & Drop */
+      .drop-zone {
+        border: 2px dashed #1a73e8;
+        border-radius: 8px;
+        background: #f8fbff;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .drop-zone.dragover {
+        background: #e3f2fd;
+        border-color: #0d47a1;
+      }
+      .draggable-item {
+        background: #1a73e8;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin: 8px 0;
+        cursor: grab;
+        user-select: none;
+        transition:
+          opacity 0.2s,
+          transform 0.15s;
+      }
+      .draggable-item:active {
+        cursor: grabbing;
+      }
+      .draggable-item.dragging {
+        opacity: 0.5;
+        transform: scale(0.98);
+      }
+
+      /* Context menu */
+      .context-menu {
+        display: none;
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        min-width: 180px;
+      }
+      .context-menu div {
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+      .context-menu div:hover {
+        background: #f0f0f0;
+      }
+
+      /* Custom popup / Overlay */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+      }
+      .overlay.show {
+        display: flex;
+      }
+      .popup {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 420px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      }
+      .popup h3 {
+        margin-bottom: 12px;
+        color: #1a73e8;
+      }
+      .popup p {
+        margin: 12px 0 20px;
+        color: #555;
+      }
+      .popup .form-group {
+        text-align: left;
+        margin-bottom: 14px;
+      }
+      .popup .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .popup .form-group input,
+      .popup .form-group select {
+        width: 100%;
+        max-width: 100%;
+        padding: 9px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+      .popup-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .btn-cancel {
+        background: #5f6368;
+      }
+      .btn-cancel:hover {
+        background: #3c4043;
+      }
+      .btn-save {
+        background: #0d904f;
+      }
+      .btn-save:hover {
+        background: #0a7a42;
+      }
+
+      /* Hover dropdown */
+      .hover-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .hover-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        min-width: 160px;
+        z-index: 100;
+      }
+      .hover-dropdown:hover .hover-menu {
+        display: block;
+      }
+      .hover-menu a {
+        display: block;
+        padding: 10px 16px;
+        text-decoration: none;
+        color: #333;
+      }
+      .hover-menu a:hover {
+        background: #f0f0f0;
+      }
+
+      /* Accordion */
+      .accordion-item {
+        border: 1px solid #ddd;
+        margin-bottom: 6px;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .accordion-header {
+        background: #e8f0fe;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+      }
+      .accordion-body {
+        display: none;
+        padding: 15px;
+        background: #fafafa;
+      }
+      .accordion-item.open .accordion-body {
+        display: block;
+      }
+
+      /* Slider */
+      .slider-container {
+        max-width: 400px;
+      }
+      input[type="range"] {
+        width: 100%;
+      }
+      .slider-value {
+        font-weight: 600;
+        margin-left: 10px;
+      }
+
+      /* Custom select */
+      .custom-select {
+        position: relative;
+        max-width: 300px;
+      }
+      .custom-select-trigger {
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+      }
+      .custom-options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 0 0 6px 6px;
+        z-index: 50;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .custom-options.open {
+        display: block;
+      }
+      .custom-option {
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      .custom-option:hover {
+        background: #f0f0f0;
+      }
+
+      /* Tree view */
+      .tree ul {
+        list-style: none;
+        padding-left: 20px;
+      }
+      .tree li {
+        margin: 6px 0;
+      }
+      .tree .folder {
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .tree .folder::before {
+        content: "▶ ";
+        font-size: 10px;
+      }
+      .tree .folder.open::before {
+        content: "▼ ";
+      }
+      .tree .nested {
+        display: none;
+      }
+      .tree .folder.open + .nested {
+        display: block;
+      }
+
+      /* Shadow DOM host */
+      #shadow-host {
+        border: 1px dashed #1a73e8;
+        padding: 20px;
+        border-radius: 8px;
+        background: #f8fbff;
+        max-width: 420px;
+      }
+
+      /* Iframes */
+      iframe {
+        width: 100%;
+        height: 220px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        margin: 10px 0;
+      }
+      .iframe-label {
+        font-weight: 600;
+        margin: 12px 0 6px;
+        color: #1a73e8;
+      }
+
+      /* Delayed element */
+      #delayed-element {
+        display: none;
+        background: #e8f5e9;
+        border: 1px solid #4caf50;
+        padding: 15px;
+        border-radius: 6px;
+        margin-top: 12px;
+        color: #2e7d32;
+        font-weight: 600;
+      }
+
+      /* List */
+      .random-list {
+        list-style: none;
+        padding: 0;
+      }
+      .random-list li {
+        background: #f5f5f5;
+        margin: 4px 0;
+        padding: 8px 12px;
+        border-radius: 4px;
+        border-left: 4px solid #1a73e8;
+      }
+
+      a {
+        color: #1a73e8;
+      }
+      .file-download {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Automation Testing Playground</h1>
+
+    <!-- 1. Textbox -->
+    <div class="section">
+      <h2>1. Textbox</h2>
+      <label for="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Enter your username"
+      />
+    </div>
+
+    <!-- 2. Password -->
+    <div class="section">
+      <h2>2. Password</h2>
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+      />
+    </div>
+
+    <!-- 3. Textarea -->
+    <div class="section">
+      <h2>3. Textarea</h2>
+      <label for="comments">Comments / Feedback</label>
+      <textarea
+        id="comments"
+        name="comments"
+        placeholder="Write your comments here..."
+      ></textarea>
+    </div>
+
+    <!-- 4. Checkbox with 5 options -->
+    <div class="section">
+      <h2>4. Checkbox (5 options)</h2>
+      <label>Select your interests</label>
+      <div class="checkbox-group">
+        <label
+          ><input
+            type="checkbox"
+            name="interests"
+            value="sports"
+            id="chk-sports"
+          />
+          Sports</label
+        >
+        <label
+          ><input
+            type="checkbox"
+            name="interests"
+            value="music"
+            id="chk-music"
+          />
+          Music</label
+        >
+        <label
+          ><input
+            type="checkbox"
+            name="interests"
+            value="travel"
+            id="chk-travel"
+          />
+          Travel</label
+        >
+        <label
+          ><input
+            type="checkbox"
+            name="interests"
+            value="technology"
+            id="chk-technology"
+          />
+          Technology</label
+        >
+        <label
+          ><input
+            type="checkbox"
+            name="interests"
+            value="cooking"
+            id="chk-cooking"
+          />
+          Cooking</label
+        >
+      </div>
+    </div>
+
+    <!-- 5. Radio button with 5 options -->
+    <div class="section">
+      <h2>5. Radio Buttons (5 options)</h2>
+      <label>Preferred contact method</label>
+      <div class="radio-group">
+        <label
+          ><input type="radio" name="contact" value="email" id="radio-email" />
+          Email</label
+        >
+        <label
+          ><input type="radio" name="contact" value="phone" id="radio-phone" />
+          Phone</label
+        >
+        <label
+          ><input type="radio" name="contact" value="sms" id="radio-sms" />
+          SMS</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="contact"
+            value="whatsapp"
+            id="radio-whatsapp"
+          />
+          WhatsApp</label
+        >
+        <label
+          ><input type="radio" name="contact" value="mail" id="radio-mail" />
+          Postal Mail</label
+        >
+      </div>
+    </div>
+
+    <!-- 6. Single select dropdown -->
+    <div class="section">
+      <h2>6. Single Select Dropdown (5 options)</h2>
+      <label for="country">Country</label>
+      <select id="country" name="country">
+        <option value="">-- Select Country --</option>
+        <option value="india">India</option>
+        <option value="usa">United States</option>
+        <option value="uk">United Kingdom</option>
+        <option value="canada">Canada</option>
+        <option value="australia">Australia</option>
+      </select>
+    </div>
+
+    <!-- 7. Multi select dropdown -->
+    <div class="section">
+      <h2>7. Multi Select Dropdown (5 options)</h2>
+      <label for="skills">Skills (hold Ctrl/Cmd to select multiple)</label>
+      <select id="skills" name="skills" multiple size="5">
+        <option value="java">Java</option>
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+        <option value="selenium">Selenium</option>
+        <option value="cypress">Cypress</option>
+      </select>
+    </div>
+
+    <!-- 8. Alert, Confirm, Prompt -->
+    <div class="section">
+      <h2>8. Alert / Confirm / Prompt</h2>
+      <button id="btn-alert" onclick="alert('This is a simple Alert dialog!')">
+        Show Alert
+      </button>
+      <button id="btn-confirm" onclick="handleConfirm()">Show Confirm</button>
+      <button id="btn-prompt" onclick="handlePrompt()">Show Prompt</button>
+      <p id="dialog-result" style="margin-top: 10px; color: #555"></p>
+    </div>
+
+    <!-- 9. Button with context menu (5 options) -->
+    <div class="section">
+      <h2>9. Button with Context Menu (Right-click)</h2>
+      <button id="context-btn">Right-click me for menu</button>
+      <div id="context-menu" class="context-menu">
+        <div data-action="edit">Edit</div>
+        <div data-action="copy">Copy</div>
+        <div data-action="paste">Paste</div>
+        <div data-action="delete">Delete</div>
+        <div data-action="properties">Properties</div>
+      </div>
+      <p id="context-result" style="margin-top: 8px; color: #555"></p>
+    </div>
+
+    <!-- 10. Link to open new tab -->
+    <div class="section">
+      <h2>10. Link – Open in New Tab</h2>
+      <a
+        id="link-new-tab"
+        href="https://www.example.com"
+        target="_blank"
+        rel="noopener"
+        >Open Example.com in New Tab</a
+      >
+    </div>
+
+    <!-- 11. Link to open new window -->
+    <div class="section">
+      <h2>11. Link – Open in New Window</h2>
+      <a
+        id="link-new-window"
+        href="https://www.example.com"
+        onclick="
+          window.open(this.href, 'newwindow', 'width=800,height=600');
+          return false;
+        "
+        >Open Example.com in New Window</a
+      >
+    </div>
+
+    <!-- 12. Table (with Edit + Delete) -->
+    <div class="section">
+      <h2>
+        12. Table (Checkbox + Sorting + Pagination + Loader + Edit/Delete)
+      </h2>
+
+      <div class="table-toolbar">
+        <div class="selection-info" id="selection-info">0 rows selected</div>
+        <div>
+          <button id="clear-selection" type="button">Clear Selection</button>
+        </div>
+      </div>
+
+      <table id="data-table">
+        <thead>
+          <tr>
+            <th style="width: 40px">
+              <input
+                type="checkbox"
+                id="select-all"
+                title="Select all on current page"
+              />
+            </th>
+            <th data-col="0">
+              ID <span class="sort-icon" id="sort-icon-0">⇅</span>
+            </th>
+            <th data-col="1">
+              Name <span class="sort-icon" id="sort-icon-1">⇅</span>
+            </th>
+            <th data-col="2">
+              Department <span class="sort-icon" id="sort-icon-2">⇅</span>
+            </th>
+            <th data-col="3">
+              Salary <span class="sort-icon" id="sort-icon-3">⇅</span>
+            </th>
+            <th style="width: 140px; cursor: default">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+
+      <div class="pagination" id="pagination">
+        <button id="prev-page" class="page-btn" disabled>Previous</button>
+        <button id="next-page" class="page-btn">Next</button>
+        <div class="loader" id="table-loader"></div>
+      </div>
+
+      <p id="table-status"></p>
+    </div>
+
+    <!-- Edit Row Popup -->
+    <div class="overlay" id="edit-overlay">
+      <div class="popup">
+        <h3>Edit Employee</h3>
+        <input type="hidden" id="edit-id" />
+        <div class="form-group">
+          <label for="edit-name">Name</label>
+          <input type="text" id="edit-name" placeholder="Enter name" />
+        </div>
+        <div class="form-group">
+          <label for="edit-dept">Department</label>
+          <select id="edit-dept">
+            <option value="Engineering">Engineering</option>
+            <option value="Marketing">Marketing</option>
+            <option value="HR">HR</option>
+            <option value="Sales">Sales</option>
+            <option value="Finance">Finance</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-salary">Salary</label>
+          <input
+            type="number"
+            id="edit-salary"
+            placeholder="Enter salary"
+            min="0"
+            step="1000"
+          />
+        </div>
+        <div class="popup-actions">
+          <button type="button" class="btn-cancel" id="edit-cancel">
+            Cancel
+          </button>
+          <button type="button" class="btn-save" id="edit-save">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. Multiple tabs -->
+    <div class="section">
+      <h2>13. Multiple Tabs (3-second delay loading long text)</h2>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab1">Overview</button>
+        <button class="tab-btn" data-tab="tab2">Details</button>
+        <button class="tab-btn" data-tab="tab3">History</button>
+      </div>
+      <div id="tab1" class="tab-content active">
+        <div class="tab-loader" id="loader-tab1">
+          Loading content... please wait 3 seconds
+        </div>
+        <div class="tab-body" id="body-tab1"></div>
+      </div>
+      <div id="tab2" class="tab-content">
+        <div class="tab-loader" id="loader-tab2">
+          Loading content... please wait 3 seconds
+        </div>
+        <div class="tab-body" id="body-tab2"></div>
+      </div>
+      <div id="tab3" class="tab-content">
+        <div class="tab-loader" id="loader-tab3">
+          Loading content... please wait 3 seconds
+        </div>
+        <div class="tab-body" id="body-tab3"></div>
+      </div>
+    </div>
+
+    <!-- 14. Drag and Drop -->
+    <div class="section">
+      <h2>14. Drag and Drop</h2>
+      <p style="margin-bottom: 15px; color: #555">
+        Drag items between the two lists. You can also drag them back.
+      </p>
+
+      <div style="display: flex; gap: 30px; flex-wrap: wrap">
+        <div style="flex: 1; min-width: 220px">
+          <h3 style="margin-bottom: 10px; font-size: 1rem">Source List</h3>
+          <div
+            class="drop-zone"
+            id="source-list"
+            style="min-height: 280px; text-align: left; padding: 15px"
+          >
+            <div
+              class="draggable-item"
+              id="drag-item-1"
+              draggable="true"
+              data-id="1"
+            >
+              Item 1 - Apple
+            </div>
+            <div
+              class="draggable-item"
+              id="drag-item-2"
+              draggable="true"
+              data-id="2"
+            >
+              Item 2 - Banana
+            </div>
+            <div
+              class="draggable-item"
+              id="drag-item-3"
+              draggable="true"
+              data-id="3"
+            >
+              Item 3 - Cherry
+            </div>
+            <div
+              class="draggable-item"
+              id="drag-item-4"
+              draggable="true"
+              data-id="4"
+            >
+              Item 4 - Date
+            </div>
+            <div
+              class="draggable-item"
+              id="drag-item-5"
+              draggable="true"
+              data-id="5"
+            >
+              Item 5 - Elderberry
+            </div>
+          </div>
+        </div>
+        <div style="flex: 1; min-width: 220px">
+          <h3 style="margin-bottom: 10px; font-size: 1rem">Target List</h3>
+          <div
+            class="drop-zone"
+            id="target-list"
+            style="min-height: 280px; text-align: left; padding: 15px"
+          ></div>
+        </div>
+      </div>
+      <p
+        id="drag-status"
+        style="margin-top: 15px; color: #1a73e8; font-weight: 600"
+      ></p>
+    </div>
+
+    <!-- 15. Double Click Button -->
+    <div class="section">
+      <h2>15. Double Click Button</h2>
+      <button id="dblclick-btn">Double-click me</button>
+      <p style="margin-top: 10px; color: #666; font-size: 14px">
+        Double-click the button above to open a popup.
+      </p>
+    </div>
+
+    <!-- Double-click Popup -->
+    <div class="overlay" id="dblclick-overlay">
+      <div class="popup">
+        <h3>Double Click Detected!</h3>
+        <p id="dblclick-popup-message">
+          You successfully double-clicked the button.
+        </p>
+        <button id="close-dblclick-popup">Close</button>
+      </div>
+    </div>
+
+    <!-- 16. Custom popup with overlay -->
+    <div class="section">
+      <h2>16. Custom Popup with Overlay</h2>
+      <button id="open-popup">Open Custom Popup</button>
+    </div>
+    <div class="overlay" id="popup-overlay">
+      <div class="popup">
+        <h3>Custom Popup</h3>
+        <p style="margin: 15px 0">
+          This is a custom modal dialog with overlay.
+        </p>
+        <button id="close-popup">Close</button>
+      </div>
+    </div>
+
+    <!-- 17. Single Iframe + Nested Iframe -->
+    <div class="section">
+      <h2>17. Single & Nested Iframe</h2>
+
+      <div class="iframe-label">17a. Single Iframe</div>
+      <p style="margin-bottom: 8px; color: #666; font-size: 14px">
+        A simple standalone iframe with a few form fields.
+      </p>
+
+      <iframe
+        id="single-iframe"
+        title="Single Iframe"
+        srcdoc="
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f0f7ff; margin: 0; }
+                h3 { color: #1a73e8; margin-bottom: 15px; }
+                label { display: block; font-weight: 600; margin: 10px 0 4px; }
+                input, select, button {
+                    width: 90%; padding: 8px 10px; margin-bottom: 10px;
+                    border: 1px solid #ccc; border-radius: 5px; font-size: 14px;
+                }
+                button {
+                    background: #1a73e8; color: white; border: none; cursor: pointer; width: auto; padding: 8px 16px;
+                }
+            </style>
+        </head>
+        <body>
+            <h3>Single Iframe Content</h3>
+            <label for='single-name'>Full Name</label>
+            <input type='text' id='single-name' placeholder='Enter full name'>
+
+            <label for='single-email'>Email</label>
+            <input type='email' id='single-email' placeholder='name@example.com'>
+
+            <label for='single-country'>Country</label>
+            <select id='single-country'>
+                <option value=''>-- Select --</option>
+                <option value='india'>India</option>
+                <option value='usa'>USA</option>
+                <option value='uk'>UK</option>
+            </select>
+
+            <br>
+            <button id='single-submit'>Submit</button>
+        </body>
+        </html>
+    "
+      ></iframe>
+
+      <div class="iframe-label" style="margin-top: 30px">
+        17b. Nested Iframe
+      </div>
+      <p style="margin-bottom: 8px; color: #666; font-size: 14px">
+        Outer iframe contains another iframe (nested).
+      </p>
+
+      <iframe
+        id="nested-outer-iframe"
+        title="Nested Outer Iframe"
+        srcdoc="
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body { font-family: 'Segoe UI', sans-serif; padding: 15px; background: #fff8e1; margin: 0; }
+                h3 { color: #e65100; margin-bottom: 12px; }
+                label { display: block; font-weight: 600; margin: 8px 0 4px; }
+                input, select {
+                    width: 90%; padding: 7px 10px; margin-bottom: 8px;
+                    border: 1px solid #ccc; border-radius: 5px;
+                }
+                .inner-frame-title {
+                    margin-top: 18px; font-weight: 600; color: #bf360c;
+                }
+            </style>
+        </head>
+        <body>
+            <h3>Outer Frame</h3>
+            <label for='outer-username'>Username</label>
+            <input type='text' id='outer-username' placeholder='Outer username'>
+
+            <label for='outer-role'>Role</label>
+            <select id='outer-role'>
+                <option value='admin'>Admin</option>
+                <option value='editor'>Editor</option>
+                <option value='viewer'>Viewer</option>
+            </select>
+
+            <div class='inner-frame-title'>↓ Nested (Inner) Iframe below ↓</div>
+
+            <iframe id='nested-inner-iframe' title='Nested Inner Iframe' srcdoc='
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: sans-serif; padding: 12px; background: #e8f5e9; margin: 0; }
+                        h4 { color: #2e7d32; margin-bottom: 10px; }
+                        label { display: block; font-weight: 600; margin: 8px 0 4px; }
+                        input { width: 90%; padding: 7px 10px; border: 1px solid #ccc; border-radius: 4px; }
+                    </style>
+                </head>
+                <body>
+                    <h4>Inner Frame Content</h4>
+                    <label for=&quot;inner-email&quot;>Email</label>
+                    <input type=&quot;email&quot; id=&quot;inner-email&quot; placeholder=&quot;inner@example.com&quot;>
+
+                    <label for=&quot;inner-phone&quot;>Phone</label>
+                    <input type=&quot;tel&quot; id=&quot;inner-phone&quot; placeholder=&quot;+91 98765 43210&quot;>
+
+                    <label for=&quot;inner-city&quot;>City</label>
+                    <input type=&quot;text&quot; id=&quot;inner-city&quot; placeholder=&quot;City name&quot;>
+                </body>
+                </html>
+            ' style='width:100%; height:180px; border:2px solid #81c784; border-radius:6px; margin-top:8px;'></iframe>
+        </body>
+        </html>
+    "
+      ></iframe>
+    </div>
+
+    <!-- 18. Mouse Hover dropdown -->
+    <div class="section">
+      <h2>18. Mouse Hover Dropdown Menu</h2>
+      <div class="hover-dropdown">
+        <button id="hover-btn">Hover over me</button>
+        <div class="hover-menu">
+          <a href="#profile" id="menu-profile">Profile</a>
+          <a href="#settings" id="menu-settings">Settings</a>
+          <a href="#messages" id="menu-messages">Messages</a>
+          <a href="#notifications" id="menu-notifications">Notifications</a>
+          <a href="#logout" id="menu-logout">Logout</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 19. Shadow DOM -->
+    <div class="section">
+      <h2>19. Shadow DOM (5 sample fields)</h2>
+      <p style="margin-bottom: 12px; color: #666; font-size: 14px">
+        Fields below are inside an open Shadow DOM. Use
+        <code>shadowRoot</code> to access them.
+      </p>
+      <div id="shadow-host"></div>
+    </div>
+
+    <!-- 20. Accordion menu with 5 options -->
+    <div class="section">
+      <h2>20. Accordion Menu (5 options)</h2>
+      <div class="accordion">
+        <div class="accordion-item">
+          <div class="accordion-header" data-acc="1">
+            Section 1 – Introduction <span>+</span>
+          </div>
+          <div class="accordion-body">
+            This is the content of the Introduction section. It contains sample
+            text for testing accordion expand/collapse behaviour.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" data-acc="2">
+            Section 2 – Features <span>+</span>
+          </div>
+          <div class="accordion-body">
+            Feature list: responsive design, accessibility, keyboard navigation,
+            ARIA attributes, and smooth animations.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" data-acc="3">
+            Section 3 – Pricing <span>+</span>
+          </div>
+          <div class="accordion-body">
+            Basic: Free | Pro: $9/mo | Enterprise: Custom pricing based on
+            requirements.
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" data-acc="4">
+            Section 4 – Support <span>+</span>
+          </div>
+          <div class="accordion-body">
+            Email support, live chat (Pro+), dedicated account manager
+            (Enterprise).
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" data-acc="5">
+            Section 5 – FAQ <span>+</span>
+          </div>
+          <div class="accordion-body">
+            Common questions about installation, licensing, upgrades and refunds
+            are answered here.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 21. Date Pickers -->
+    <div class="section">
+      <h2>21. Date Pickers</h2>
+      <label for="start-date">Start Date</label>
+      <input type="date" id="start-date" name="start-date" />
+      <label for="end-date">End Date</label>
+      <input type="date" id="end-date" name="end-date" />
+    </div>
+
+    <!-- 22. Time Pickers -->
+    <div class="section">
+      <h2>22. Time Pickers</h2>
+      <label for="start-time">Start Time</label>
+      <input type="time" id="start-time" name="start-time" />
+      <label for="end-time">End Time</label>
+      <input type="time" id="end-time" name="end-time" />
+    </div>
+
+    <!-- 23. Dynamic button -->
+    <div class="section">
+      <h2>23. Dynamic Button</h2>
+      <button id="dynamic-btn">Click to change me</button>
+      <p id="dynamic-status" style="margin-top: 8px; color: #555"></p>
+    </div>
+
+    <!-- 24. Slider with percentage -->
+    <div class="section">
+      <h2>24. Slider with Percentage</h2>
+      <div class="slider-container">
+        <label for="volume-slider">Volume</label>
+        <input type="range" id="volume-slider" min="0" max="100" value="50" />
+        <span class="slider-value" id="slider-value">50%</span>
+      </div>
+    </div>
+
+    <!-- 25. Custom Select dropdown -->
+    <div class="section">
+      <h2>25. Custom Select Dropdown</h2>
+      <div class="custom-select" id="custom-select">
+        <div class="custom-select-trigger" id="custom-trigger">
+          <span id="custom-selected">-- Select Language --</span>
+          <span>▼</span>
+        </div>
+        <div class="custom-options" id="custom-options">
+          <div class="custom-option" data-value="english">English</div>
+          <div class="custom-option" data-value="spanish">Spanish</div>
+          <div class="custom-option" data-value="french">French</div>
+          <div class="custom-option" data-value="german">German</div>
+          <div class="custom-option" data-value="japanese">Japanese</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 26. File upload and download -->
+    <div class="section">
+      <h2>26. File Upload & Download</h2>
+      <label for="file-upload">Upload a file</label>
+      <input type="file" id="file-upload" name="file-upload" />
+      <p id="file-info" style="margin: 8px 0; color: #555"></p>
+      <div class="file-download">
+        <a
+          id="download-link"
+          href="data:text/plain;charset=utf-8,Sample%20file%20content%20for%20download%20testing."
+          download="sample-download.txt"
+          >Download Sample File</a
+        >
+      </div>
+    </div>
+
+    <!-- 27. List of random 10 values -->
+    <div class="section">
+      <h2>27. List of 10 Random Values</h2>
+      <ul class="random-list" id="random-list"></ul>
+    </div>
+
+    <!-- 28. Tree view menu -->
+    <div class="section">
+      <h2>28. Tree View Menu</h2>
+      <div class="tree" id="tree-view">
+        <ul>
+          <li>
+            <span class="folder">Documents</span>
+            <ul class="nested">
+              <li>
+                <span class="folder">Work</span>
+                <ul class="nested">
+                  <li>Report.docx</li>
+                  <li>Budget.xlsx</li>
+                </ul>
+              </li>
+              <li>
+                <span class="folder">Personal</span>
+                <ul class="nested">
+                  <li>Resume.pdf</li>
+                  <li>Photos.zip</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <span class="folder">Projects</span>
+            <ul class="nested">
+              <li>Automation Suite</li>
+              <li>API Tests</li>
+              <li>UI Regression</li>
+            </ul>
+          </li>
+          <li>
+            <span class="folder">Archive</span>
+            <ul class="nested">
+              <li>2024</li>
+              <li>2025</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 29. Delayed element -->
+    <div class="section">
+      <h2>29. Delayed Element (3-second wait test)</h2>
+      <button id="trigger-delay">
+        Click the button below to trigger an element that appears after a
+        3-second delay
+      </button>
+      <div id="delayed-element">
+        Element appeared after 3 seconds! Ready for wait assertions.
+      </div>
+    </div>
+
+    <script>
+      // ---------- 8. Confirm & Prompt handlers ----------
+      function handleConfirm() {
+        const result = confirm("Do you want to proceed?");
+        document.getElementById("dialog-result").textContent = result
+          ? "User clicked OK"
+          : "User clicked Cancel";
+      }
+      function handlePrompt() {
+        const value = prompt("Please enter your name:", "John Doe");
+        document.getElementById("dialog-result").textContent =
+          value === null ? "User cancelled prompt" : "User entered: " + value;
+      }
+
+      // ---------- 9. Context menu ----------
+      const contextBtn = document.getElementById("context-btn");
+      const contextMenu = document.getElementById("context-menu");
+      contextBtn.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        contextMenu.style.display = "block";
+        contextMenu.style.left = e.pageX + "px";
+        contextMenu.style.top = e.pageY + "px";
+      });
+      document.addEventListener("click", () => {
+        contextMenu.style.display = "none";
+      });
+      contextMenu.querySelectorAll("div").forEach((item) => {
+        item.addEventListener("click", () => {
+          document.getElementById("context-result").textContent =
+            "Selected: " + item.dataset.action;
+          contextMenu.style.display = "none";
+        });
+      });
+
+      // ---------- 12. Table with Edit + Delete ----------
+      let tableData = [
+        { id: 1, name: "Alice Johnson", dept: "Engineering", salary: 95000 },
+        { id: 2, name: "Bob Smith", dept: "Marketing", salary: 72000 },
+        { id: 3, name: "Carol White", dept: "HR", salary: 68000 },
+        { id: 4, name: "David Brown", dept: "Engineering", salary: 110000 },
+        { id: 5, name: "Eva Green", dept: "Sales", salary: 85000 },
+        { id: 6, name: "Frank Black", dept: "Finance", salary: 90000 },
+        { id: 7, name: "Grace Lee", dept: "Engineering", salary: 105000 },
+        { id: 8, name: "Henry Wilson", dept: "Marketing", salary: 78000 },
+        { id: 9, name: "Ivy Chen", dept: "HR", salary: 65000 },
+        { id: 10, name: "Jack Turner", dept: "Sales", salary: 88000 },
+        { id: 11, name: "Karen Davis", dept: "Finance", salary: 92000 },
+        { id: 12, name: "Leo Martinez", dept: "Engineering", salary: 98000 },
+        { id: 13, name: "Mia Patel", dept: "Marketing", salary: 74000 },
+        { id: 14, name: "Noah Kim", dept: "Sales", salary: 81000 },
+        { id: 15, name: "Olivia Ross", dept: "HR", salary: 70000 },
+      ];
+
+      let currentPage = 1;
+      const rowsPerPage = 5;
+      let sortCol = null;
+      let sortAsc = true;
+      let selectedIds = new Set();
+
+      function updateSelectionInfo() {
+        document.getElementById("selection-info").textContent =
+          selectedIds.size +
+          " row" +
+          (selectedIds.size === 1 ? "" : "s") +
+          " selected";
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById("table-body");
+        tbody.innerHTML = "";
+        const start = (currentPage - 1) * rowsPerPage;
+        const pageData = tableData.slice(start, start + rowsPerPage);
+
+        pageData.forEach((row) => {
+          const tr = document.createElement("tr");
+          if (selectedIds.has(row.id)) tr.classList.add("selected-row");
+
+          tr.innerHTML = `
+                <td>
+                    <input type="checkbox" class="row-check" data-id="${row.id}"
+                           ${selectedIds.has(row.id) ? "checked" : ""}>
+                </td>
+                <td>${row.id}</td>
+                <td>${row.name}</td>
+                <td>${row.dept}</td>
+                <td>${row.salary.toLocaleString()}</td>
+                <td>
+                    <button class="btn-edit" data-id="${row.id}" title="Edit">Edit</button>
+                    <button class="btn-delete" data-id="${row.id}" title="Delete">Delete</button>
+                </td>
+            `;
+          tbody.appendChild(tr);
+        });
+
+        // Checkbox listeners
+        const checks = document.querySelectorAll(".row-check");
+        const allChecked =
+          checks.length > 0 && [...checks].every((c) => c.checked);
+        document.getElementById("select-all").checked = allChecked;
+
+        checks.forEach((cb) => {
+          cb.addEventListener("change", function () {
+            const id = Number(this.dataset.id);
+            if (this.checked) {
+              selectedIds.add(id);
+              this.closest("tr").classList.add("selected-row");
+            } else {
+              selectedIds.delete(id);
+              this.closest("tr").classList.remove("selected-row");
+            }
+            updateSelectionInfo();
+            const all = [...document.querySelectorAll(".row-check")].every(
+              (c) => c.checked,
+            );
+            document.getElementById("select-all").checked = all;
+          });
+        });
+
+        // Edit buttons
+        document.querySelectorAll(".btn-edit").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = Number(this.dataset.id);
+            openEditModal(id);
+          });
+        });
+
+        // Delete buttons
+        document.querySelectorAll(".btn-delete").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = Number(this.dataset.id);
+            deleteRow(id);
+          });
+        });
+
+        renderPagination();
+        updateSelectionInfo();
+      }
+
+      function renderPagination() {
+        const totalPages = Math.max(
+          1,
+          Math.ceil(tableData.length / rowsPerPage),
+        );
+        const pagination = document.getElementById("pagination");
+
+        pagination
+          .querySelectorAll(".page-number")
+          .forEach((btn) => btn.remove());
+
+        const nextBtn = document.getElementById("next-page");
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.className =
+            "page-btn page-number" + (i === currentPage ? " active" : "");
+          btn.textContent = i;
+          btn.dataset.page = i;
+          btn.addEventListener("click", () => {
+            if (i !== currentPage) {
+              showLoaderThen(() => {
+                currentPage = i;
+                renderTable();
+              });
+            }
+          });
+          pagination.insertBefore(btn, nextBtn);
+        }
+
+        document.getElementById("prev-page").disabled = currentPage === 1;
+        document.getElementById("next-page").disabled =
+          currentPage === totalPages || tableData.length === 0;
+      }
+
+      function updateSortIcons() {
+        for (let i = 0; i < 4; i++) {
+          const icon = document.getElementById("sort-icon-" + i);
+          const th = icon.closest("th");
+
+          if (i === sortCol) {
+            icon.textContent = sortAsc ? "▲" : "▼";
+            th.classList.add("sorted");
+          } else {
+            icon.textContent = "⇅";
+            th.classList.remove("sorted");
+          }
+        }
+      }
+
+      function sortTable(col) {
+        if (sortCol === col) {
+          sortAsc = !sortAsc;
+        } else {
+          sortCol = col;
+          sortAsc = true;
+        }
+
+        updateSortIcons();
+
+        const keys = ["id", "name", "dept", "salary"];
+        tableData.sort((a, b) => {
+          let va = a[keys[col]],
+            vb = b[keys[col]];
+          if (typeof va === "string") {
+            return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+          }
+          return sortAsc ? va - vb : vb - va;
+        });
+
+        document.getElementById("table-status").textContent =
+          `Sorted by ${keys[col]} (${sortAsc ? "Ascending ▲" : "Descending ▼"})`;
+
+        currentPage = 1;
+        renderTable();
+      }
+
+      // ----- Delete -----
+      function deleteRow(id) {
+        const row = tableData.find((r) => r.id === id);
+        if (!row) return;
+
+        const confirmed = confirm(
+          `Are you sure you want to delete "${row.name}" (ID: ${id})?`,
+        );
+        if (!confirmed) return;
+
+        tableData = tableData.filter((r) => r.id !== id);
+        selectedIds.delete(id);
+
+        // Adjust current page if needed
+        const totalPages = Math.max(
+          1,
+          Math.ceil(tableData.length / rowsPerPage),
+        );
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        document.getElementById("table-status").textContent =
+          `Deleted row ID ${id} (${row.name})`;
+        renderTable();
+      }
+
+      // ----- Edit -----
+      function openEditModal(id) {
+        const row = tableData.find((r) => r.id === id);
+        if (!row) return;
+
+        document.getElementById("edit-id").value = row.id;
+        document.getElementById("edit-name").value = row.name;
+        document.getElementById("edit-dept").value = row.dept;
+        document.getElementById("edit-salary").value = row.salary;
+
+        document.getElementById("edit-overlay").classList.add("show");
+      }
+
+      function closeEditModal() {
+        document.getElementById("edit-overlay").classList.remove("show");
+      }
+
+      document
+        .getElementById("edit-cancel")
+        .addEventListener("click", closeEditModal);
+
+      document.getElementById("edit-overlay").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) closeEditModal();
+      });
+
+      document.getElementById("edit-save").addEventListener("click", () => {
+        const id = Number(document.getElementById("edit-id").value);
+        const name = document.getElementById("edit-name").value.trim();
+        const dept = document.getElementById("edit-dept").value;
+        const salary = Number(document.getElementById("edit-salary").value);
+
+        if (!name) {
+          alert("Name cannot be empty");
+          return;
+        }
+        if (isNaN(salary) || salary < 0) {
+          alert("Please enter a valid salary");
+          return;
+        }
+
+        const row = tableData.find((r) => r.id === id);
+        if (row) {
+          row.name = name;
+          row.dept = dept;
+          row.salary = salary;
+          document.getElementById("table-status").textContent =
+            `Updated row ID ${id} successfully`;
+          closeEditModal();
+          renderTable();
+        }
+      });
+
+      // Header click → sort
+      document.querySelectorAll("#data-table th[data-col]").forEach((th) => {
+        th.addEventListener("click", () => sortTable(Number(th.dataset.col)));
+      });
+
+      document
+        .getElementById("select-all")
+        .addEventListener("change", function () {
+          document.querySelectorAll(".row-check").forEach((cb) => {
+            cb.checked = this.checked;
+            const id = Number(cb.dataset.id);
+            if (this.checked) {
+              selectedIds.add(id);
+              cb.closest("tr").classList.add("selected-row");
+            } else {
+              selectedIds.delete(id);
+              cb.closest("tr").classList.remove("selected-row");
+            }
+          });
+          updateSelectionInfo();
+        });
+
+      document
+        .getElementById("clear-selection")
+        .addEventListener("click", () => {
+          selectedIds.clear();
+          document.querySelectorAll(".row-check").forEach((cb) => {
+            cb.checked = false;
+            cb.closest("tr").classList.remove("selected-row");
+          });
+          document.getElementById("select-all").checked = false;
+          updateSelectionInfo();
+          document.getElementById("table-status").textContent =
+            "Selection cleared";
+        });
+
+      document.getElementById("prev-page").addEventListener("click", () => {
+        if (currentPage > 1) {
+          showLoaderThen(() => {
+            currentPage--;
+            renderTable();
+          });
+        }
+      });
+      document.getElementById("next-page").addEventListener("click", () => {
+        const totalPages = Math.ceil(tableData.length / rowsPerPage);
+        if (currentPage < totalPages) {
+          showLoaderThen(() => {
+            currentPage++;
+            renderTable();
+          });
+        }
+      });
+
+      function showLoaderThen(callback) {
+        const loader = document.getElementById("table-loader");
+        loader.style.display = "inline-block";
+        document.getElementById("prev-page").disabled = true;
+        document.getElementById("next-page").disabled = true;
+        document
+          .querySelectorAll(".page-number")
+          .forEach((b) => (b.disabled = true));
+
+        setTimeout(() => {
+          loader.style.display = "none";
+          callback();
+        }, 800);
+      }
+
+      updateSortIcons();
+      renderTable();
+
+      // ---------- 13. Tabs ----------
+      const tabContents = {
+        tab1: "Overview: This tab demonstrates asynchronous content loading. The text you are reading was intentionally delayed by three seconds to simulate network latency or heavy processing. Automation frameworks can use explicit waits (WebDriverWait, ExpectedConditions) or implicit waits to handle such delayed elements reliably. Long text continues here to ensure the element has substantial content for visibility and text assertions during test execution.",
+        tab2: "Details: Detailed technical specifications, API endpoints, response codes, authentication flows and error handling strategies are described in this section. Again the content appears only after a three-second artificial delay so that wait strategies can be validated. Testers should verify both the presence of the loader and the subsequent appearance of this paragraph.",
+        tab3: "History: Version 1.0 released in January, 1.1 added table pagination, 1.2 introduced Shadow DOM support, 1.3 added drag-and-drop and delayed elements. This historical narrative is also loaded after a three-second pause, giving ample opportunity to practice fluent waits and presence-of-element conditions.",
+      };
+
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((c) => c.classList.remove("active"));
+          btn.classList.add("active");
+          const tabId = btn.dataset.tab;
+          const content = document.getElementById(tabId);
+          content.classList.add("active");
+
+          const loader = document.getElementById("loader-" + tabId);
+          const body = document.getElementById("body-" + tabId);
+          body.innerHTML = "";
+          loader.style.display = "block";
+          setTimeout(() => {
+            loader.style.display = "none";
+            body.textContent = tabContents[tabId];
+          }, 3000);
+        });
+      });
+      document.querySelector('.tab-btn[data-tab="tab1"]').click();
+
+      // ---------- 14. Drag and Drop ----------
+      const sourceList = document.getElementById("source-list");
+      const targetList = document.getElementById("target-list");
+      const dragStatus = document.getElementById("drag-status");
+      let draggedItem = null;
+
+      document.querySelectorAll(".draggable-item").forEach((item) => {
+        item.addEventListener("dragstart", (e) => {
+          draggedItem = item;
+          item.classList.add("dragging");
+          e.dataTransfer.setData("text/plain", item.dataset.id);
+          e.dataTransfer.effectAllowed = "move";
+        });
+        item.addEventListener("dragend", () => {
+          item.classList.remove("dragging");
+          draggedItem = null;
+        });
+      });
+
+      [sourceList, targetList].forEach((zone) => {
+        zone.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          zone.classList.add("dragover");
+          e.dataTransfer.dropEffect = "move";
+        });
+        zone.addEventListener("dragleave", () =>
+          zone.classList.remove("dragover"),
+        );
+        zone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          zone.classList.remove("dragover");
+          if (draggedItem && draggedItem.parentElement !== zone) {
+            zone.appendChild(draggedItem);
+            const to = zone === targetList ? "Target List" : "Source List";
+            dragStatus.textContent = `Moved "${draggedItem.textContent}" to ${to}`;
+          }
+        });
+      });
+
+      // ---------- 15. Double Click → Show Popup ----------
+      document
+        .getElementById("dblclick-btn")
+        .addEventListener("dblclick", () => {
+          const message = document.getElementById("dblclick-popup-message");
+          message.textContent =
+            "You successfully double-clicked the button at " +
+            new Date().toLocaleTimeString();
+          document.getElementById("dblclick-overlay").classList.add("show");
+        });
+
+      document
+        .getElementById("close-dblclick-popup")
+        .addEventListener("click", () => {
+          document.getElementById("dblclick-overlay").classList.remove("show");
+        });
+
+      document
+        .getElementById("dblclick-overlay")
+        .addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) {
+            e.currentTarget.classList.remove("show");
+          }
+        });
+
+      // ---------- 16. Custom popup ----------
+      document.getElementById("open-popup").addEventListener("click", () => {
+        document.getElementById("popup-overlay").classList.add("show");
+      });
+      document.getElementById("close-popup").addEventListener("click", () => {
+        document.getElementById("popup-overlay").classList.remove("show");
+      });
+      document
+        .getElementById("popup-overlay")
+        .addEventListener("click", (e) => {
+          if (e.target === e.currentTarget)
+            e.currentTarget.classList.remove("show");
+        });
+
+      // ---------- 19. Shadow DOM ----------
+      const shadowHost = document.getElementById("shadow-host");
+      const shadow = shadowHost.attachShadow({ mode: "open" });
+      shadow.innerHTML = `
+        <style>
+            :host {
+                display: block;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .shadow-form {
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .form-row {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+            label {
+                font-weight: 600;
+                font-size: 14px;
+                color: #333;
+            }
+            input[type="text"],
+            input[type="email"],
+            select {
+                width: 100%;
+                padding: 9px 12px;
+                border: 1px solid #c0c0c0;
+                border-radius: 6px;
+                font-size: 14px;
+                background: #fff;
+                transition: border-color 0.2s;
+            }
+            input:focus, select:focus {
+                outline: none;
+                border-color: #1a73e8;
+                box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+            }
+            .checkbox-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 4px;
+            }
+            .checkbox-row label {
+                font-weight: normal;
+                cursor: pointer;
+            }
+            .checkbox-row input[type="checkbox"] {
+                width: 16px;
+                height: 16px;
+                accent-color: #1a73e8;
+            }
+            button {
+                align-self: flex-start;
+                background: #1a73e8;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-size: 14px;
+                cursor: pointer;
+                margin-top: 6px;
+                transition: background 0.2s;
+            }
+            button:hover {
+                background: #1557b0;
+            }
+        </style>
+
+        <div class="shadow-form">
+            <div class="form-row">
+                <label for="shadow-username">Username</label>
+                <input type="text" id="shadow-username" placeholder="Enter username" autocomplete="off">
+            </div>
+            <div class="form-row">
+                <label for="shadow-email">Email Address</label>
+                <input type="email" id="shadow-email" placeholder="name@example.com">
+            </div>
+            <div class="form-row">
+                <label for="shadow-role">Role</label>
+                <select id="shadow-role">
+                    <option value="">-- Select Role --</option>
+                    <option value="admin">Admin</option>
+                    <option value="editor">Editor</option>
+                    <option value="viewer">Viewer</option>
+                    <option value="guest">Guest</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label for="shadow-department">Department</label>
+                <select id="shadow-department">
+                    <option value="">-- Select Department --</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="hr">Human Resources</option>
+                    <option value="finance">Finance</option>
+                </select>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="shadow-agree">
+                <label for="shadow-agree">I agree to the terms and conditions</label>
+            </div>
+            <button type="button" id="shadow-submit">Submit Shadow Form</button>
+        </div>
+    `;
+
+      // ---------- 20. Accordion ----------
+      document.querySelectorAll(".accordion-header").forEach((header) => {
+        header.addEventListener("click", () => {
+          const item = header.parentElement;
+          const isOpen = item.classList.contains("open");
+          document.querySelectorAll(".accordion-item").forEach((i) => {
+            i.classList.remove("open");
+            i.querySelector(".accordion-header span").textContent = "+";
+          });
+          if (!isOpen) {
+            item.classList.add("open");
+            header.querySelector("span").textContent = "−";
+          }
+        });
+      });
+
+      // ---------- 23. Dynamic button ----------
+      let dynamicCount = 0;
+      document
+        .getElementById("dynamic-btn")
+        .addEventListener("click", function () {
+          dynamicCount++;
+          this.textContent = "Clicked " + dynamicCount + " time(s)";
+          this.style.background =
+            dynamicCount % 2 === 0 ? "#1a73e8" : "#0d904f";
+          document.getElementById("dynamic-status").textContent =
+            "Button state updated. Count = " + dynamicCount;
+        });
+
+      // ---------- 24. Slider ----------
+      const slider = document.getElementById("volume-slider");
+      const sliderVal = document.getElementById("slider-value");
+      slider.addEventListener("input", () => {
+        sliderVal.textContent = slider.value + "%";
+      });
+
+      // ---------- 25. Custom select ----------
+      const trigger = document.getElementById("custom-trigger");
+      const options = document.getElementById("custom-options");
+      const selected = document.getElementById("custom-selected");
+      trigger.addEventListener("click", () => options.classList.toggle("open"));
+      document.querySelectorAll(".custom-option").forEach((opt) => {
+        opt.addEventListener("click", () => {
+          selected.textContent = opt.textContent;
+          options.classList.remove("open");
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (!document.getElementById("custom-select").contains(e.target)) {
+          options.classList.remove("open");
+        }
+      });
+
+      // ---------- 26. File upload ----------
+      document
+        .getElementById("file-upload")
+        .addEventListener("change", function () {
+          const file = this.files[0];
+          document.getElementById("file-info").textContent = file
+            ? `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`
+            : "No file selected";
+        });
+
+      // ---------- 27. Random list ----------
+      const randomValues = [
+        "Alpha-7291",
+        "Beta-3845",
+        "Gamma-9162",
+        "Delta-4738",
+        "Epsilon-2056",
+        "Zeta-8419",
+        "Eta-5623",
+        "Theta-1397",
+        "Iota-6784",
+        "Kappa-3021",
+      ];
+      const listEl = document.getElementById("random-list");
+      randomValues.forEach((v) => {
+        const li = document.createElement("li");
+        li.textContent = v;
+        listEl.appendChild(li);
+      });
+
+      // ---------- 28. Tree view ----------
+      document.querySelectorAll(".tree .folder").forEach((folder) => {
+        folder.addEventListener("click", (e) => {
+          e.stopPropagation();
+          folder.classList.toggle("open");
+        });
+      });
+
+      // ---------- 29. Delayed element ----------
+      document
+        .getElementById("trigger-delay")
+        .addEventListener("click", function () {
+          const el = document.getElementById("delayed-element");
+          el.style.display = "none";
+          this.disabled = true;
+          this.textContent = "Waiting 3 seconds...";
+          setTimeout(() => {
+            el.style.display = "block";
+            this.disabled = false;
+            this.textContent =
+              "Click the button below to trigger an element that appears after a 3-second delay";
+          }, 3000);
+        });
+    </script>
+  </body>
+</html>
